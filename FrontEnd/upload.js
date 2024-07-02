@@ -11,10 +11,8 @@ async function fetchCategories() {
             throw new Error(`Network response was not ok: ${response.statusText}`);
         }
         const categories = await response.json();
-        console.log('Catégories récupérées :', categories);
         return categories;
     } catch (error) {
-        console.error('Error fetching categories:', error);
         return []; // Retourner une liste vide en cas d'erreur
     }
 }
@@ -47,11 +45,8 @@ async function sendFormData(formData) {
     try {
         const token = localStorage.getItem('token');
         if (!token) {
-            console.error('Token not found. User not authenticated.');
             return;
         }
-
-        console.log('Envoi du formulaire avec token:', token);
 
         const requestOptions = {
             method: 'POST',
@@ -61,25 +56,18 @@ async function sendFormData(formData) {
             body: formData
         };
 
-        console.log('Options de la requête:', requestOptions);
-
         const response = await fetch('http://localhost:5678/api/works', requestOptions);
 
-        console.log('Réponse de l\'API status:', response.status);
         if (!response.ok) {
             const errorText = await response.text();
-            console.error('Erreur de réponse de l\'API:', errorText);
             throw new Error(`Network response was not ok: ${response.statusText} - ${errorText}`);
         }
 
         const result = await response.json();
-        console.log('Réponse JSON de l\'API :', result);
-
-        // Ajouter la nouvelle photo à la galerie
         addNewPhotoToGallery(result.imageUrl, result.title);
 
     } catch (error) {
-        console.error('Erreur lors de l\'envoi du formulaire à l\'API :', error.message);
+        // Gérer l'erreur
     }
 }
 
@@ -127,8 +115,8 @@ function addNewPhotoToGallery(imgUrl, imgTitle) {
     // Appeler afficherPhotosModal après l'ajout de la nouvelle photo
     afficherPhotosModal();
 }
+
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('DOM chargé');
     populateCategoryDropdown();
 
     const fileInput = document.getElementById('file-input');
@@ -142,7 +130,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Mettre à jour le bouton de validation au chargement du DOM
     updateSubmitButtonState();
 
-
     // Fonction pour créer FormData avec les données du formulaire
     function createFormData() {
         const title = titleInput.value.trim();
@@ -150,13 +137,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         const file = fileInput ? fileInput.files[0] : null;
 
         if (isNaN(category)) {
-            console.error('La catégorie est requise');
             return null;
         }
 
         // Vérifier si un fichier est sélectionné
         if (!file || !file.name) {
-            console.error('Le fichier est requis');
             return null;
         }
 
@@ -206,7 +191,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-
     // Vérifier si tous les champs sont remplis
     function checkFormValidity() {
         const title = titleInput.value.trim();
@@ -225,20 +209,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (validerBtn) {
         validerBtn.addEventListener('click', async (event) => {
             event.preventDefault();
-            console.log('Bouton "Valider" cliqué');
 
             // Mettre à jour le FormData avec les données du formulaire
             formData = createFormData();
 
             // Vérifier si formData est défini
             if (!formData) {
-                console.error('Veuillez remplir tous les champs et sélectionner une image');
                 return;
             }
 
             try {
                 await sendFormData(formData);
-                console.log('La nouvelle œuvre a été envoyée avec succès.');
 
                 // Réinitialiser le contenu de uploadDiv pour réafficher l'icône, le bouton et le message indicatif
                 if (uploadDiv) {
@@ -276,12 +257,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 validerBtn.setAttribute('disabled', 'disabled');
 
             } catch (error) {
-                console.error('Erreur lors de l\'envoi de la nouvelle œuvre :', error.message);
+                // Gérer l'erreur
             }
         });
-    } else {
-        console.error('Bouton "valider-photo-btn" non trouvé');
     }
+
 });
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -292,6 +272,7 @@ document.addEventListener('DOMContentLoaded', function () {
         fileInput.click(); // Déclenche le clic sur le champ de sélection de fichier
     });
 });
+
 
 
 

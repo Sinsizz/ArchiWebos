@@ -40,14 +40,12 @@ async function afficherPhotosModal() {
             // Ajouter la div noire à son conteneur
             deleteIconContainer.appendChild(blackContainer);
 
-
-
             // Ajouter un gestionnaire d'événements pour supprimer la photo au clic sur l'icône de la corbeille
             deleteIcon.addEventListener('click', async () => {
                 await deletePhotoById(photo.id); // Supprimer la photo avec l'ID correspondant
                 // Rafraîchir la galerie après la suppression de la photo
                 afficherPhotosModal();
-                afficherphotos()
+                afficherphotos();
                 hideCategoryButtons();
             });
 
@@ -62,7 +60,7 @@ async function afficherPhotosModal() {
             gallery.appendChild(imgContainer);
         });
     } catch (error) {
-        console.error('Error fetching photos:', error);
+        // Gérer l'erreur
     }
 }
 
@@ -74,12 +72,11 @@ async function deletePhotoById(photoId) {
         // Récupérer le token d'authentification depuis le local storage
         const token = getTokenFromLocalStorage();
         if (!token) {
-            console.error('Token not found. User not authenticated.');
             return;
         }
 
         // Envoyer une requête DELETE à l'API pour supprimer la photo avec le token d'authentification
-        const response = await fetch(apiUrl, {
+        await fetch(apiUrl, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -87,14 +84,8 @@ async function deletePhotoById(photoId) {
             }
         });
 
-        // Vérifier si la suppression s'est effectuée avec succès
-        if (response.ok) {
-            console.log(`Photo with id ${photoId} deleted successfully.`);
-        } else {
-            console.error('Error deleting photo:', response.statusText);
-        }
     } catch (error) {
-        console.error('Error deleting photo:', error);
+        // Gérer l'erreur
     }
 }
 
@@ -102,6 +93,7 @@ async function deletePhotoById(photoId) {
 function getTokenFromLocalStorage() {
     return localStorage.getItem('token');
 }
+
 
 
 
